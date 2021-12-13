@@ -31,26 +31,30 @@ fn random_bool() -> bool {
 fn main() {
     let _ = input("Choose heads or tails: ");
 
-    let sys_oe:u32 = random();
+    let mut _winner = String::new();
 
     if random_bool() {
         // user wins toss
-        // odd or eve
-        let odd_eve = input("Choose odd or eve: ");
-        let user_oe = input_num("Enter your odd-eve throw: ");
-        let parity = (user_oe + sys_oe)%2;
-        if ODDEVE_TUP[parity as usize] == odd_eve {
-            // user wins odd eve draw
-            let choice = input("You won the odd-eve draw.\nChoose to bat or bowl: ");
-            if choice == "bat" {
-                user::batting();
-            } else {
-                system::batting();
-            }
-        }
+        _winner = input("Choose odd or eve: ");
     } else {
         // user loses toss
-        // odd or eve
+        let temp = random();
+        _winner = String::from(ODDEVE_TUP[(temp % 2) as usize]);
+        println!("I choose {}",ODDEVE_TUP[
+            ((temp + 1)%2) as usize
+        ]);
         
+    }
+    let sys_oe = random();
+    let user_oe = input_num("Enter your odd-eve throw: ");
+    let parity = (user_oe + sys_oe)%2;
+    if ODDEVE_TUP[parity as usize] == &_winner {
+        // user wins odd eve draw
+        let choice = input("You won the odd-eve draw.\nChoose to bat or bowl: ");
+        if choice == "bat" {
+            user::batting();
+        } else {
+            system::batting();
+        }
     }
 }
