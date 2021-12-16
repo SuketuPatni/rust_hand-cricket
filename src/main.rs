@@ -52,24 +52,25 @@ fn main() {
     let sys_oe = random();
     let user_oe = input_num("Enter your odd-eve throw: ");
     let parity = (user_oe + sys_oe) % 6;
+
     println!("I chose {}", sys_oe);
     if ODDEVE_TUP[parity as usize] == &_winner {
         // user wins odd eve draw
         let choice = input("You won the odd-eve draw.\nChoose to bat or bowl: ");
-        if choice == "bat" {
-            user::batting();
-        } else {
-            system::batting();
+        match choice.as_str() {
+            "bat" => {user::batting();},
+            "bowl" => {system::batting();},
+            _ => {println!("Please enter either 'bat' or 'bowl'");}
         }
     } else {
         // system wins odd eve draw
         let temp = random();
         let sys_draw = BAT_OR_BOWL[(temp - 1) as usize];
         println!("I choose to {}", sys_draw);
-        if sys_draw == "bat" {
-            system::batting();
-        } else {
-            user::batting();
+        match sys_draw {
+            "bat" => {system::batting();},
+            "bowl" => {user::batting();},
+            _ => {}
         }
     }
 }
