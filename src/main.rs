@@ -47,7 +47,7 @@ fn main() {
         _winner = String::from(ODDEVE_TUP[(temp - 1) as usize]);
         println!("I choose {}",ODDEVE_TUP[
             (temp % 6) as usize
-        ]);    
+        ]);
     }
     let sys_oe = random();
     let user_oe = input_num("Enter your odd-eve throw: ");
