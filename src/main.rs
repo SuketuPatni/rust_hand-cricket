@@ -4,11 +4,31 @@ mod user;
 mod system;
 // mod tie;
 
-fn input_num(prompt:&str) -> u32 {
+#[derive(Debug)]
+enum NumberStringError {
+    NumberOutOfRange,
+    NotPositiveInteger,
+    NotHeadsOrTails,
+    NotOddOrEve,
+    // NotBatOrBowl
+}
+
+fn input_num(prompt:&str) -> Result<u32, NumberStringError> {
     let mut str = String::new();
     println!("{}", prompt);
     io::stdin().read_line(&mut str).expect("Failed to read line");
-    str.trim().parse::<u32>().unwrap()
+    match str.trim().parse::<u32>() {
+        Ok(d) => {
+            match d <= 6 && d > 0 {
+                true => Ok(d),
+                false => Err(NumberStringError::NumberOutOfRange)
+            }
+        },
+        Err(_e) => {
+            // println!("Please enter a positive integer!");
+            Err(NumberStringError::NotPositiveInteger)
+        }
+    }
 }
 
 fn input(prompt:&str) -> String {
@@ -30,9 +50,15 @@ fn random_bool() -> bool {
     rand::thread_rng().gen_bool(0.5)
 }
 
-fn main() {
+fn main() -> Result<(), NumberStringError> {
     println!("Welcome to Hand Cricket!");
-    let _ = input("Choose heads or tails: ");
+
+    let unused = input("Choose heads or tails: ");
+    match unused.as_str() {
+        "heads" => Ok(unused),
+        "tails" => Ok(unused),
+        _ => Err(NumberStringError::NotHeadsOrTails),
+    }?;
 
     let mut _winner = String::new();
 
@@ -40,17 +66,25 @@ fn main() {
         // user wins toss
         println!("You won the toss");
         _winner = input("Choose odd or eve: ");
+
+        match &_winner.as_str() {
+            &"odd" => Ok(&_winner),
+            &"eve" => Ok(&_winner),
+            _ => Err(NumberStringError::NotOddOrEve),
+        }?;
+
     } else {
         // user loses toss
         println!("You lost the toss");
         let temp = random();
         _winner = String::from(ODDEVE_TUP[(temp - 1) as usize]);
+        
         println!("I choose {}",ODDEVE_TUP[
             (temp % 6) as usize
         ]);
     }
     let sys_oe = random();
-    let user_oe = input_num("Enter your odd-eve throw: ");
+    let user_oe = input_num("Enter your odd-eve throw: ").unwrap();
     let parity = (user_oe + sys_oe) % 6;
 
     println!("I chose {}", sys_oe);
@@ -73,6 +107,8 @@ fn main() {
             _ => {}
         }
     }
+
+    Ok(())
 }
 
 
